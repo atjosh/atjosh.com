@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>atjosh.com</title>
+  <meta name="description" content="Something is coming. atjosh.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Tiro+Devanagari+Sanskrit&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --gold: #c9a96e;
+      --gold-dim: rgba(201, 169, 110, 0.25);
+      --bg: #0f0f0f;
+      --text-primary: #e8e0d0;
+      --text-muted: #7a7068;
+      --text-subtle: #4a4540;
+      --divider: rgba(255, 255, 255, 0.06);
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem 1.5rem;
+      letter-spacing: 0.01em;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    main {
+      width: 100%;
+      max-width: 560px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      flex: 1;
+      justify-content: center;
+    }
+
+    /* Monogram */
+    .monogram {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      border: 1.5px solid var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 2rem;
+      flex-shrink: 0;
+    }
+
+    .monogram span {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.35rem;
+      font-weight: 400;
+      color: var(--gold);
+      letter-spacing: 0.12em;
+      padding-left: 0.12em;
+    }
+
+    /* Tag line */
+    .tag {
+      font-size: 0.6rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 400;
+      margin-bottom: 1.25rem;
+      opacity: 0.75;
+    }
+
+    /* Main heading */
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 8vw, 3.5rem);
+      font-weight: 400;
+      color: var(--text-primary);
+      letter-spacing: 0.02em;
+      line-height: 1;
+      margin-bottom: 1.75rem;
+    }
+
+    /* Gold divider */
+    .divider-gold {
+      width: 48px;
+      height: 1px;
+      background: var(--gold);
+      opacity: 0.5;
+      margin-bottom: 2.25rem;
+    }
+
+    /* Vedantic block */
+    .vedantic {
+      text-align: center;
+      margin-bottom: 2.25rem;
+    }
+
+    .devanagari {
+      font-family: 'Tiro Devanagari Sanskrit', serif;
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 0.75rem;
+      opacity: 0.65;
+    }
+
+    .translation {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+      margin-bottom: 0.55rem;
+    }
+
+    .citation {
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-subtle);
+      font-weight: 400;
+    }
+
+    /* Dark divider */
+    .divider-dark {
+      width: 100%;
+      height: 1px;
+      background: var(--divider);
+      margin: 2.25rem 0;
+    }
+
+    /* Body copy */
+    .subtitle {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.75;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .hello-line {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .hello-line a {
+      color: var(--gold);
+      text-decoration: none;
+      border-bottom: 1px solid var(--gold-dim);
+      padding-bottom: 1px;
+      transition: border-color 0.2s ease, color 0.2s ease;
+    }
+
+    .hello-line a:hover {
+      color: #dbbf89;
+      border-color: rgba(201, 169, 110, 0.6);
+    }
+
+    /* Footer */
+    footer {
+      margin-top: 3.5rem;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      color: var(--text-subtle);
+      text-align: center;
+      padding-bottom: 0.5rem;
+    }
+
+    @media (max-width: 480px) {
+      .monogram {
+        width: 60px;
+        height: 60px;
+      }
+
+      .monogram span {
+        font-size: 1.15rem;
+      }
+
+      .tag {
+        letter-spacing: 0.2em;
+      }
+
+      .devanagari {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="monogram" aria-hidden="true">
+      <span>AJ</span>
+    </div>
+
+    <p class="tag">Something is coming</p>
+
+    <h1>atjosh.com</h1>
+
+    <div class="divider-gold" role="separator"></div>
+
+    <div class="vedantic">
+      <p class="devanagari">तदैक्षत — बहु स्याम् प्रजायेय</p>
+      <p class="translation">"He willed — May I become many, may I be born forth"</p>
+      <p class="citation">Taittiriya Upanishad &middot; 2.6.1</p>
+    </div>
+
+    <div class="divider-dark" role="separator"></div>
+
+    <p class="subtitle">We're working on something thoughtful. Check back soon.</p>
+
+    <p class="hello-line">In the meantime &mdash; <a href="mailto:hello@atjosh.com">say hello</a></p>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 &middot; atjosh.com</p>
+  </footer>
+</body>
+</html>
