@@ -475,50 +475,50 @@
     recipe: {
       l2: '🎯 Kya banana hai? Kitne logon ke liye?',
       l3: '📋 Kaisa chahiye?',
-      p1: 'Ek experienced Rajasthani chef jo vegetarian khana jaanta ho...',
-      p2: 'Dal baati churma, 4 logon ke liye, lunch mein...',
-      p3: 'Step-by-step Hindi mein, ingredients list ke saath...',
-      p4: 'Pyaaz lahsun nahi, zyada ghee nahi...'
+      p1: 'experienced Rajasthani chef jo vegetarian khana jaanta ho',
+      p2: 'Dal baati churma banana sikhao, 4 logon ke liye, lunch ke liye',
+      p3: 'Step-by-step Hindi mein batao, ingredients ki list ke saath',
+      p4: 'Pyaaz lahsun mat daalna, zyada ghee avoid karo'
     },
     travel: {
       l2: '🎯 Kahan jaana hai? Kitne din? Kitne log?',
       l3: '📋 Kaisa chahiye? (format / budget)',
-      p1: 'Ek experienced travel guide jo India ke tours jaanta ho...',
-      p2: 'Goa, 5 din, 2 adults 1 child, December mein...',
-      p3: 'Day-by-day plan, medium budget, Hindi mein...',
-      p4: 'Bahut expensive jagah nahi, non-veg restaurants nahi...'
+      p1: 'experienced travel guide jo India ke tours jaanta ho',
+      p2: 'Goa ka 5 din ka plan batao, 2 adults aur 1 child ke liye, December mein',
+      p3: 'Day-by-day format mein likho, medium budget mein, Hindi mein',
+      p4: 'Bahut expensive jagah avoid karo, sirf vegetarian restaurants suggest karo'
     },
     letter: {
       l2: '🎯 Kisko likhna hai? Kya kaam ke liye?',
       l3: '📋 Kaisa chahiye? (tone / language)',
-      p1: 'Ek professional writer jo formal letters likhna jaanta ho...',
-      p2: 'Principal ke naam, 3 din ki medical leave ke liye...',
-      p3: 'Formal English mein, simple words, short rakho...',
-      p4: 'Complicated English nahi, excuses mat likho...'
+      p1: 'professional writer jo formal letters likhna jaanta ho',
+      p2: 'Principal ke naam medical leave application likho, 3 din ke liye',
+      p3: 'Formal English mein likho, simple words use karo, short rakho',
+      p4: 'Complicated English mat use karna, excuses mat likho'
     },
     learn: {
       l2: '🎯 Kya seekhna hai? Tumhara level kya hai?',
       l3: '📋 Kaisa chahiye? (depth / language)',
-      p1: 'Ek simple teacher jo mushkil cheez aasaan bana sake...',
-      p2: 'AI kya hota hai — bilkul beginner hoon, tech nahi jaanta...',
-      p3: 'Simple Hindi mein, daily life ke examples ke saath...',
-      p4: 'English tech words nahi, complicated theory nahi...'
+      p1: 'simple teacher jo mushkil cheez aasaan bana sake',
+      p2: 'AI kya hota hai samjhao, main bilkul beginner hoon, tech nahi jaanta',
+      p3: 'Bilkul simple Hindi mein samjhao, daily life ke examples ke saath',
+      p4: 'English tech words avoid karo, complicated theory mat batao'
     },
     health: {
       l2: '🎯 Kya goal hai? Kya situation hai?',
       l3: '📋 Kaisa chahiye? (format / duration)',
-      p1: 'Ek certified fitness trainer jo ghar pe exercise jaanta ho...',
-      p2: 'Weight lose karna hai, 40 saal, office mein 8 ghante baithti hoon...',
-      p3: 'Weekly routine, 20-30 min daily, Hindi mein...',
-      p4: 'Koi equipment nahi chahiye, crash diet nahi...'
+      p1: 'certified fitness trainer jo ghar pe exercise jaanta ho',
+      p2: 'Weight lose karna hai, 40 saal ki hoon, office mein 8 ghante baithti hoon',
+      p3: 'Weekly routine do, har din 20-30 min ka plan, Hindi mein',
+      p4: 'Koi gym equipment nahi chahiye, crash diet suggest mat karo'
     },
     other: {
       l2: '🎯 Kya karna hai?',
       l3: '📋 Kaisa chahiye?',
-      p1: 'Jaise: Ek experienced lawyer, Ek creative writer...',
-      p2: 'Apna kaam yahan likho...',
-      p3: 'Hindi mein, bullet points mein, short mein...',
-      p4: 'Yahan likho ya khaali chhod do...'
+      p1: 'experienced [apna expert type — lawyer, chef, teacher, designer...]',
+      p2: '[apna kaam seedha likho — jaise "budget plan banao" ya "poem likho"]',
+      p3: '[format batao — jaise "Hindi mein", "bullet points mein", "short mein"]',
+      p4: '[koi restriction ho toh likho, warna khaali chhod do]'
     }
   };
 
@@ -568,11 +568,44 @@
       return;
     }
 
+    const skipF4 = ['kuch nahi','nahi','na','nothing','none','no','koi nahi','skip','khaali','blank','—','-'];
     let parts = [];
-    if (f1) parts.push('Tum ' + f1.replace(/^tum\s+/i, '') + '.');
-    if (f2) parts.push(f2.endsWith('.') ? f2 : f2 + '.');
-    if (f3) parts.push(f3.endsWith('.') ? f3 : f3 + '.');
-    if (f4) parts.push(f4.endsWith('.') ? f4 : f4 + '.');
+
+    // Field 1 — Role: "Tum ek [role] ho."
+    if (f1) {
+      let role = f1.replace(/^tum\s*(ek\s*)?/i,'').replace(/\s*ho\.?\s*$/i,'').trim();
+      if (!/^ek\s/i.test(role)) role = 'ek ' + role;
+      parts.push('Tum ' + role + ' ho.');
+    }
+
+    // Field 2 — Task: add verb if missing
+    if (f2) {
+      let task = f2.trim();
+      const hasVerb = /karo|do|batao|likho|banao|sikhao|samjhao|chahiye|dijiye|plan|suggest|bolo|dena/i.test(task);
+      if (!hasVerb) task = task + ' batao.';
+      else if (!task.match(/[.!?]$/)) task += '.';
+      parts.push(task.charAt(0).toUpperCase() + task.slice(1));
+    }
+
+    // Field 3 — Format: wrap smartly
+    if (f3) {
+      let fmt = f3.trim();
+      const hasInstruction = /mein|format|step|list|points|short|long|hindi|english|simple|detail|bullet/i.test(fmt);
+      if (!fmt.match(/[.!?]$/)) fmt += '.';
+      parts.push(fmt.charAt(0).toUpperCase() + fmt.slice(1));
+    }
+
+    // Field 4 — Avoid: skip if "kuch nahi" type
+    if (f4) {
+      const isSkip = skipF4.some(w => f4.toLowerCase().trim() === w);
+      if (!isSkip) {
+        let avoid = f4.trim();
+        const hasNeg = /nahi|mat |avoid|band|chhod|skip|without|na /i.test(avoid);
+        if (!hasNeg) avoid = avoid + ' avoid karo.';
+        else if (!avoid.match(/[.!?]$/)) avoid += '.';
+        parts.push(avoid.charAt(0).toUpperCase() + avoid.slice(1));
+      }
+    }
 
     const prompt = parts.join('\n');
     document.getElementById('output-text').textContent = prompt;
