@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI ko Smartly Use Karo</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #f5f0eb;
+      color: #1a1a1a;
+      min-height: 100vh;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, #b03020 0%, #d4521e 60%, #e8821a 100%);
+      color: white;
+      padding: 36px 20px 32px;
+      text-align: center;
+    }
+    .hero h1 { font-size: 1.8rem; font-weight: 800; line-height: 1.2; }
+    .hero p  { margin-top: 8px; font-size: 0.92rem; opacity: 0.88; }
+
+    /* ── MAIN CARD ── */
+    .container { max-width: 640px; margin: 0 auto; padding: 24px 16px 60px; }
+
+    .tool-card {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.09);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    /* ── CATEGORY CHIPS ── */
+    .cat-section { padding: 20px 20px 16px; border-bottom: 1px solid #f0ebe4; }
+    .cat-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #888;
+      margin-bottom: 12px;
+    }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip {
+      padding: 7px 15px;
+      border-radius: 24px;
+      border: 1.5px solid #e0d8d0;
+      background: #faf7f4;
+      font-size: 0.85rem;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.18s;
+      font-weight: 500;
+      user-select: none;
+    }
+    .chip:hover { border-color: #c0392b; color: #c0392b; background: #fff5f5; }
+    .chip.active { background: #c0392b; border-color: #c0392b; color: white; }
+    .chip.other.active { background: #555; border-color: #555; }
+
+    /* ── FIELDS ── */
+    .fields-section { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+
+    .field-group { display: flex; flex-direction: column; gap: 6px; }
+    .field-group label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #444;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .field-group label .role-tag {
+      font-size: 0.72rem;
+      font-weight: 600;
+      background: #fff0ed;
+      color: #c0392b;
+      padding: 2px 7px;
+      border-radius: 10px;
+    }
+    .field-group label .opt-tag {
+      font-size: 0.72rem;
+      font-weight: 400;
+      color: #aaa;
+    }
+    .field-group textarea {
+      width: 100%;
+      border: 1.5px solid #e8e0d8;
+      border-radius: 10px;
+      padding: 10px 13px;
+      font-size: 0.88rem;
+      font-family: inherit;
+      color: #222;
+      resize: none;
+      line-height: 1.55;
+      background: #faf8f6;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+      min-height: 56px;
+      overflow: hidden;
+    }
+    .field-group textarea:focus {
+      outline: none;
+      border-color: #c0392b;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(192,57,43,0.1);
+    }
+    .field-group textarea::placeholder { color: #bbb; font-style: italic; }
+
+    /* ── OTHER HINT ── */
+    .other-hint {
+      font-size: 0.82rem;
+      color: #888;
+      background: #faf7f4;
+      border: 1.5px dashed #ddd;
+      border-radius: 10px;
+      padding: 10px 14px;
+      line-height: 1.5;
+    }
+
+    /* ── GENERATE BUTTON ── */
+    .generate-wrap { padding: 0 20px 20px; }
+    .generate-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #b03020, #d4521e);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      letter-spacing: 0.2px;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .generate-btn:hover  { opacity: 0.92; transform: translateY(-1px); }
+    .generate-btn:active { transform: translateY(0); opacity: 1; }
+
+    /* ── OUTPUT ── */
+    .output-wrap {
+      margin: 0 20px 20px;
+      display: none;
+    }
+    .output-box {
+      background: #fffbf5;
+      border: 1.5px solid #e8821a;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .output-header {
+      background: #fef3e8;
+      border-bottom: 1px solid #f0d8b8;
+      padding: 10px 14px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: #c05010;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+    .output-text {
+      padding: 14px;
+      font-size: 0.9rem;
+      line-height: 1.75;
+      color: #222;
+      white-space: pre-wrap;
+    }
+    .output-footer {
+      display: flex;
+      gap: 8px;
+      padding: 10px 14px;
+      border-top: 1px solid #f0d8b8;
+      background: #fef3e8;
+    }
+    .copy-btn {
+      flex: 1;
+      background: #c0392b;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 9px 16px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .copy-btn:hover   { background: #a93226; }
+    .copy-btn.copied  { background: #27ae60; }
+    .reset-btn {
+      background: white;
+      color: #888;
+      border: 1.5px solid #e0d8d0;
+      border-radius: 8px;
+      padding: 9px 14px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .reset-btn:hover { border-color: #c0392b; color: #c0392b; }
+
+    /* ── TIPS ── */
+    .tips-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .tips-title {
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: #333;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tip-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 11px;
+      font-size: 0.84rem;
+      line-height: 1.55;
+      color: #444;
+    }
+    .tip-row:last-child { margin-bottom: 0; }
+    .tip-icon { flex-shrink: 0; font-size: 1rem; }
+
+    /* ── EXAMPLES ── */
+    .examples-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .examples-toggle {
+      width: 100%;
+      background: none;
+      border: none;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: #333;
+      text-align: left;
+    }
+    .examples-toggle .arrow { font-size: 0.9rem; color: #aaa; transition: transform 0.2s; }
+    .examples-toggle.open .arrow { transform: rotate(180deg); }
+    .examples-body { display: none; border-top: 1px solid #f0ebe4; }
+    .examples-body.open { display: block; }
+
+    .example-item {
+      padding: 16px 20px;
+      border-bottom: 1px solid #f7f3ef;
+    }
+    .example-item:last-child { border-bottom: none; }
+    .ex-cat {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #c0392b;
+      margin-bottom: 6px;
+    }
+    .ex-prompt {
+      font-size: 0.85rem;
+      line-height: 1.65;
+      color: #333;
+      background: #faf7f4;
+      border-radius: 8px;
+      padding: 10px 12px;
+      border-left: 3px solid #e8821a;
+    }
+    .ex-copy {
+      background: none;
+      border: 1px solid #e0d8d0;
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      color: #888;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: all 0.2s;
+    }
+    .ex-copy:hover { border-color: #c0392b; color: #c0392b; }
+    .ex-copy.copied { background: #27ae60; border-color: #27ae60; color: white; }
+
+    /* ── SHARE CARD ── */
+    .share-card {
+      background: linear-gradient(135deg, #b03020 0%, #d4521e 60%, #e8821a 100%);
+      border-radius: 16px;
+      padding: 24px 20px;
+      text-align: center;
+      color: white;
+      margin-bottom: 20px;
+    }
+    .share-card h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 8px; }
+    .share-card p  { font-size: 0.88rem; opacity: 0.9; line-height: 1.65; }
+
+    /* ── FOOTER ── */
+    .footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.78rem;
+      color: #bbb;
+    }
+    .footer a { color: #bbb; text-decoration: none; }
+    .footer a:hover { color: #c0392b; }
+  </style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>🤖 AI ko Smartly Use Karo</h1>
+  <p>Category choose karo → 4 cheezein bharo → Prompt copy karo aur use karo!</p>
+</div>
+
+<div class="container">
+
+  <div class="tool-card">
+
+    <!-- CATEGORY CHIPS -->
+    <div class="cat-section">
+      <div class="cat-label">Kya karna hai?</div>
+      <div class="chips" id="chips">
+        <span class="chip active" data-cat="recipe">🍽️ Recipe</span>
+        <span class="chip" data-cat="travel">✈️ Travel</span>
+        <span class="chip" data-cat="letter">✉️ Letter</span>
+        <span class="chip" data-cat="learn">📚 Seekhna</span>
+        <span class="chip" data-cat="health">💪 Health</span>
+        <span class="chip other" data-cat="other">✏️ Kuch Aur</span>
+      </div>
+    </div>
+
+    <!-- FIELDS -->
+    <div class="fields-section" id="fields-section">
+
+      <!-- Field 1: Role -->
+      <div class="field-group">
+        <label>
+          🎭 Tum kaun ho?
+          <span class="role-tag">AI ka role</span>
+        </label>
+        <textarea id="f1" rows="2" autocomplete="off"></textarea>
+      </div>
+
+      <!-- Field 2: Category-specific -->
+      <div class="field-group">
+        <label id="l2">🎯 Kya banana hai?</label>
+        <textarea id="f2" rows="2" autocomplete="off"></textarea>
+      </div>
+
+      <!-- Field 3: How -->
+      <div class="field-group">
+        <label id="l3">📋 Kaisa chahiye?</label>
+        <textarea id="f3" rows="2" autocomplete="off"></textarea>
+      </div>
+
+      <!-- Field 4: Avoid -->
+      <div class="field-group">
+        <label>
+          🚫 Kya avoid karein?
+          <span class="opt-tag">(optional)</span>
+        </label>
+        <textarea id="f4" rows="2" autocomplete="off"></textarea>
+      </div>
+
+    </div>
+
+    <!-- GENERATE -->
+    <div class="generate-wrap">
+      <button class="generate-btn" id="gen-btn" onclick="generatePrompt()">
+        ⚡ Mera Prompt Banao
+      </button>
+    </div>
+
+    <!-- OUTPUT (hidden until generated) -->
+    <div class="output-wrap" id="output-wrap">
+      <div class="output-box">
+        <div class="output-header">✅ Tera Prompt Ready Hai — Copy Karo!</div>
+        <div class="output-text" id="output-text"></div>
+        <div class="output-footer">
+          <button class="copy-btn" id="copy-btn" onclick="copyPrompt(this)">📋 Copy Karo</button>
+          <button class="reset-btn" onclick="resetOutput()">↩ Wapas Jaao</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TIPS -->
+  <div class="tips-card">
+    <div class="tips-title">💡 Kaam Ki Baatein</div>
+    <div class="tip-row">
+      <span class="tip-icon">🗣️</span>
+      <span><strong>Hindi ya English — dono chalenge.</strong> Jis bhaasha mein likho, AI usi mein jawab dega.</span>
+    </div>
+    <div class="tip-row">
+      <span class="tip-icon">🔄</span>
+      <span><strong>Pasand nahi aaya?</strong> "Wapas Jaao" dabao, kuch badlo, aur dobara generate karo.</span>
+    </div>
+    <div class="tip-row">
+      <span class="tip-icon">📏</span>
+      <span><strong>"Kaisa chahiye" mein length bhi likh sakte ho</strong> — jaise "sirf 5 bullet points mein" ya "200 words mein."</span>
+    </div>
+    <div class="tip-row">
+      <span class="tip-icon">🧑‍⚕️</span>
+      <span><strong>Medical, legal aur financial advice</strong> ke liye AI ki help lo, par final decision expert se karo.</span>
+    </div>
+  </div>
+
+  <!-- EXAMPLES -->
+  <div class="examples-card">
+    <button class="examples-toggle" id="ex-toggle" onclick="toggleExamples()">
+      <span>📖 Ready-Made Examples Dekho</span>
+      <span class="arrow">▼</span>
+    </button>
+    <div class="examples-body" id="examples-body">
+
+      <div class="example-item">
+        <div class="ex-cat">🍽️ Recipe</div>
+        <div class="ex-prompt" id="ep1">Tum ek experienced Rajasthani chef ho jo vegetarian khana jaanta ho. Mujhe dal baati churma ki recipe chahiye 4 logon ke liye, lunch ke liye. Step-by-step Hindi mein batao, ingredients ki list ke saath. Pyaaz aur lahsun mat daalna.</div>
+        <button class="ex-copy" onclick="copyExample(this, 'ep1')">📋 Copy</button>
+      </div>
+
+      <div class="example-item">
+        <div class="ex-cat">✈️ Travel</div>
+        <div class="ex-prompt" id="ep2">Tum ek experienced travel guide ho jo India ke tours jaanta ho. Mujhe Goa ke liye 5 din ka trip plan chahiye — 2 adults aur 1 child (8 saal), December mein. Day-by-day format mein, medium budget mein. Sirf vegetarian restaurants suggest karo, bahut expensive jagah avoid karo.</div>
+        <button class="ex-copy" onclick="copyExample(this, 'ep2')">📋 Copy</button>
+      </div>
+
+      <div class="example-item">
+        <div class="ex-cat">✉️ Letter</div>
+        <div class="ex-prompt" id="ep3">Tum ek professional writer ho jo formal letters likhna jaanta ho. Mujhe Principal ke naam ek leave application likhni hai — 3 din ki medical leave ke liye. Formal English mein likho, lekin language simple rakho. Bahut complicated words mat use karo.</div>
+        <button class="ex-copy" onclick="copyExample(this, 'ep3')">📋 Copy</button>
+      </div>
+
+      <div class="example-item">
+        <div class="ex-cat">📚 Seekhna</div>
+        <div class="ex-prompt" id="ep4">Tum ek simple teacher ho jo mushkil cheezein aasaan bana sake. Mujhe samajhna hai ki AI kya hota hai aur kaise kaam karta hai — main bilkul beginner hoon, tech zyada nahi jaanta. Bilkul simple Hindi mein samjhao, daily life ke examples ke saath. English tech words avoid karo.</div>
+        <button class="ex-copy" onclick="copyExample(this, 'ep4')">📋 Copy</button>
+      </div>
+
+      <div class="example-item">
+        <div class="ex-cat">💪 Health</div>
+        <div class="ex-prompt" id="ep5">Tum ek certified fitness trainer ho jo ghar pe exercise jaanta ho. Mujhe ek weekly exercise routine chahiye — main 40 saal ki hoon, office mein 8 ghante baithti hoon, thoda weight lose karna chahti hoon. Har din 20-30 minute ka plan do, Hindi mein. Koi equipment nahi chahiye, crash diet suggest mat karo.</div>
+        <button class="ex-copy" onclick="copyExample(this, 'ep5')">📋 Copy</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SHARE CARD -->
+  <div class="share-card">
+    <h3>🤝 Kisi ko AI seekhna hai?</h3>
+    <p>Yeh guide apne doston aur family ke saath share karo —<br>sab ke kaam aayegi, guarantee hai! 😄</p>
+  </div>
+
+  <div class="footer">
+    Works on ChatGPT · Claude · Gemini — sab par! 🚀<br>
+    Made with ❤️ · <a href="https://www.atjosh.com" target="_blank">atjosh.com</a>
+  </div>
+
+</div>
+
+<script>
+  const catData = {
+    recipe: {
+      l2: '🎯 Kya banana hai? Kitne logon ke liye?',
+      l3: '📋 Kaisa chahiye?',
+      p1: 'Ek experienced Rajasthani chef jo vegetarian khana jaanta ho...',
+      p2: 'Dal baati churma, 4 logon ke liye, lunch mein...',
+      p3: 'Step-by-step Hindi mein, ingredients list ke saath...',
+      p4: 'Pyaaz lahsun nahi, zyada ghee nahi...'
+    },
+    travel: {
+      l2: '🎯 Kahan jaana hai? Kitne din? Kitne log?',
+      l3: '📋 Kaisa chahiye? (format / budget)',
+      p1: 'Ek experienced travel guide jo India ke tours jaanta ho...',
+      p2: 'Goa, 5 din, 2 adults 1 child, December mein...',
+      p3: 'Day-by-day plan, medium budget, Hindi mein...',
+      p4: 'Bahut expensive jagah nahi, non-veg restaurants nahi...'
+    },
+    letter: {
+      l2: '🎯 Kisko likhna hai? Kya kaam ke liye?',
+      l3: '📋 Kaisa chahiye? (tone / language)',
+      p1: 'Ek professional writer jo formal letters likhna jaanta ho...',
+      p2: 'Principal ke naam, 3 din ki medical leave ke liye...',
+      p3: 'Formal English mein, simple words, short rakho...',
+      p4: 'Complicated English nahi, excuses mat likho...'
+    },
+    learn: {
+      l2: '🎯 Kya seekhna hai? Tumhara level kya hai?',
+      l3: '📋 Kaisa chahiye? (depth / language)',
+      p1: 'Ek simple teacher jo mushkil cheez aasaan bana sake...',
+      p2: 'AI kya hota hai — bilkul beginner hoon, tech nahi jaanta...',
+      p3: 'Simple Hindi mein, daily life ke examples ke saath...',
+      p4: 'English tech words nahi, complicated theory nahi...'
+    },
+    health: {
+      l2: '🎯 Kya goal hai? Kya situation hai?',
+      l3: '📋 Kaisa chahiye? (format / duration)',
+      p1: 'Ek certified fitness trainer jo ghar pe exercise jaanta ho...',
+      p2: 'Weight lose karna hai, 40 saal, office mein 8 ghante baithti hoon...',
+      p3: 'Weekly routine, 20-30 min daily, Hindi mein...',
+      p4: 'Koi equipment nahi chahiye, crash diet nahi...'
+    },
+    other: {
+      l2: '🎯 Kya karna hai?',
+      l3: '📋 Kaisa chahiye?',
+      p1: 'Jaise: Ek experienced lawyer, Ek creative writer...',
+      p2: 'Apna kaam yahan likho...',
+      p3: 'Hindi mein, bullet points mein, short mein...',
+      p4: 'Yahan likho ya khaali chhod do...'
+    }
+  };
+
+  let currentCat = 'recipe';
+
+  function setCategory(cat) {
+    currentCat = cat;
+    const d = catData[cat];
+    document.getElementById('l2').textContent = d.l2;
+    document.getElementById('l3').textContent = d.l3;
+    document.getElementById('f1').placeholder = d.p1;
+    document.getElementById('f2').placeholder = d.p2;
+    document.getElementById('f3').placeholder = d.p3;
+    document.getElementById('f4').placeholder = d.p4;
+    ['f1','f2','f3','f4'].forEach(id => {
+      document.getElementById(id).value = '';
+      autoResize(document.getElementById(id));
+    });
+    resetOutput();
+  }
+
+  function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.max(56, el.scrollHeight) + 'px';
+  }
+
+  document.querySelectorAll('textarea').forEach(ta => {
+    ta.addEventListener('input', () => autoResize(ta));
+  });
+
+  document.getElementById('chips').addEventListener('click', function(e) {
+    const chip = e.target.closest('[data-cat]');
+    if (!chip) return;
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    setCategory(chip.dataset.cat);
+  });
+
+  function generatePrompt() {
+    const f1 = document.getElementById('f1').value.trim();
+    const f2 = document.getElementById('f2').value.trim();
+    const f3 = document.getElementById('f3').value.trim();
+    const f4 = document.getElementById('f4').value.trim();
+
+    if (!f1 && !f2) {
+      alert('Bhai, pehle kuch toh likho! 😄\nKam se kam pehle do fields bharo.');
+      return;
+    }
+
+    let parts = [];
+    if (f1) parts.push('Tum ' + f1.replace(/^tum\s+/i, '') + '.');
+    if (f2) parts.push(f2.endsWith('.') ? f2 : f2 + '.');
+    if (f3) parts.push(f3.endsWith('.') ? f3 : f3 + '.');
+    if (f4) parts.push(f4.endsWith('.') ? f4 : f4 + '.');
+
+    const prompt = parts.join('\n');
+    document.getElementById('output-text').textContent = prompt;
+
+    const wrap = document.getElementById('output-wrap');
+    wrap.style.display = 'block';
+    wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    const copyBtn = document.getElementById('copy-btn');
+    copyBtn.textContent = '📋 Copy Karo';
+    copyBtn.classList.remove('copied');
+  }
+
+  function copyPrompt(btn) {
+    const text = document.getElementById('output-text').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = '✅ Copy Ho Gaya!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = '📋 Copy Karo';
+        btn.classList.remove('copied');
+      }, 2500);
+    });
+  }
+
+  function resetOutput() {
+    const wrap = document.getElementById('output-wrap');
+    wrap.style.display = 'none';
+  }
+
+  function toggleExamples() {
+    const body = document.getElementById('examples-body');
+    const btn  = document.getElementById('ex-toggle');
+    body.classList.toggle('open');
+    btn.classList.toggle('open');
+  }
+
+  function copyExample(btn, id) {
+    const text = document.getElementById(id).textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = '✅ Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = '📋 Copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+
+  setCategory('recipe');
+</script>
+</body>
+</html>
