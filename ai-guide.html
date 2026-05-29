@@ -1,316 +1,107 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AI ko Smartly Use Karo</title>
+  <meta name="description" content="Build smart AI prompts in 5 steps. Works with ChatGPT, Claude and Gemini. Free tool by atjosh.com"/>
+  <meta property="og:title" content="AI Prompt Builder"/>
+  <meta property="og:description" content="Answer 5 quick questions and get a perfect AI prompt. Works with ChatGPT, Claude and Gemini."/>
+  <title>AI Prompt Builder — atjosh.com</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f5f0eb; color: #1a1a1a; min-height: 100vh; }
 
-    body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      background: #f5f0eb;
-      color: #1a1a1a;
-      min-height: 100vh;
-    }
+    .hero { background: linear-gradient(135deg, #b03020 0%, #d4521e 60%, #e8821a 100%); color: white; padding: 32px 20px 28px; text-align: center; }
+    .hero h1 { font-size: 1.7rem; font-weight: 800; line-height: 1.2; }
+    .hero p  { margin-top: 8px; font-size: 0.88rem; opacity: 0.88; }
 
-    /* ── HERO ── */
-    .hero {
-      background: linear-gradient(135deg, #b03020 0%, #d4521e 60%, #e8821a 100%);
-      color: white;
-      padding: 36px 20px 32px;
-      text-align: center;
-    }
-    .hero h1 { font-size: 1.8rem; font-weight: 800; line-height: 1.2; }
-    .hero p  { margin-top: 8px; font-size: 0.92rem; opacity: 0.88; }
+    .container { max-width: 600px; margin: 0 auto; padding: 24px 16px 60px; }
 
-    /* ── MAIN CARD ── */
-    .container { max-width: 640px; margin: 0 auto; padding: 24px 16px 60px; }
+    /* ── STEP CARD ── */
+    .step-card { background: white; border-radius: 20px; box-shadow: 0 4px 24px rgba(0,0,0,0.09); overflow: hidden; margin-bottom: 20px; }
 
-    .tool-card {
-      background: white;
-      border-radius: 20px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.09);
-      overflow: hidden;
-      margin-bottom: 24px;
-    }
+    /* ── PROGRESS BAR ── */
+    .progress-wrap { padding: 16px 20px 0; }
+    .progress-label { font-size: 0.75rem; font-weight: 700; color: #aaa; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; display: flex; justify-content: space-between; }
+    .progress-track { height: 4px; background: #f0ebe4; border-radius: 4px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #b03020, #e8821a); border-radius: 4px; transition: width 0.4s ease; }
 
-    /* ── CATEGORY CHIPS ── */
-    .cat-section { padding: 20px 20px 16px; border-bottom: 1px solid #f0ebe4; }
-    .cat-label {
-      font-size: 0.78rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      color: #888;
-      margin-bottom: 12px;
-    }
-    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
-    .chip {
-      padding: 7px 15px;
-      border-radius: 24px;
-      border: 1.5px solid #e0d8d0;
-      background: #faf7f4;
-      font-size: 0.85rem;
-      color: #666;
-      cursor: pointer;
-      transition: all 0.18s;
-      font-weight: 500;
-      user-select: none;
-    }
-    .chip:hover { border-color: #c0392b; color: #c0392b; background: #fff5f5; }
+    /* ── STEP BODY ── */
+    .step-body { padding: 20px; }
+    .step-question { font-size: 1.05rem; font-weight: 800; color: #1a1a1a; margin-bottom: 6px; line-height: 1.3; }
+    .step-hint { font-size: 0.8rem; color: #999; margin-bottom: 16px; }
+
+    /* ── CHIPS ── */
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+    .chip { padding: 7px 14px; border-radius: 20px; border: 1.5px solid #e0d8d0; background: #faf7f4; font-size: 0.83rem; color: #555; cursor: pointer; transition: all 0.15s; font-weight: 500; user-select: none; }
+    .chip:hover { border-color: #c0392b; color: #c0392b; }
     .chip.active { background: #c0392b; border-color: #c0392b; color: white; }
-    .chip.other.active { background: #555; border-color: #555; }
 
-    /* ── FIELDS ── */
-    .fields-section { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+    /* ── TEXT INPUT ── */
+    .step-input { width: 100%; border: 1.5px solid #e8e0d8; border-radius: 10px; padding: 10px 13px; font-size: 0.88rem; font-family: inherit; color: #222; resize: none; line-height: 1.55; background: #faf8f6; transition: border-color 0.2s, box-shadow 0.2s; min-height: 60px; overflow: hidden; }
+    .step-input:focus { outline: none; border-color: #c0392b; background: white; box-shadow: 0 0 0 3px rgba(192,57,43,0.1); }
+    .step-input::placeholder { color: #ccc; font-style: italic; }
 
-    .field-group { display: flex; flex-direction: column; gap: 6px; }
-    .field-group label {
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: #444;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .field-group label .role-tag {
-      font-size: 0.72rem;
-      font-weight: 600;
-      background: #fff0ed;
-      color: #c0392b;
-      padding: 2px 7px;
-      border-radius: 10px;
-    }
-    .field-group label .opt-tag {
-      font-size: 0.72rem;
-      font-weight: 400;
-      color: #aaa;
-    }
-    .field-group textarea {
-      width: 100%;
-      border: 1.5px solid #e8e0d8;
-      border-radius: 10px;
-      padding: 10px 13px;
-      font-size: 0.88rem;
-      font-family: inherit;
-      color: #222;
-      resize: none;
-      line-height: 1.55;
-      background: #faf8f6;
-      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
-      min-height: 56px;
-      overflow: hidden;
-    }
-    .field-group textarea:focus {
-      outline: none;
-      border-color: #c0392b;
-      background: white;
-      box-shadow: 0 0 0 3px rgba(192,57,43,0.1);
-    }
-    .field-group textarea::placeholder { color: #bbb; font-style: italic; }
+    /* ── NAV BUTTONS ── */
+    .step-nav { display: flex; gap: 10px; padding: 0 20px 20px; }
+    .btn-next { flex: 1; background: linear-gradient(135deg, #b03020, #d4521e); color: white; border: none; border-radius: 10px; padding: 12px; font-size: 0.95rem; font-weight: 800; cursor: pointer; transition: opacity 0.2s, transform 0.15s; }
+    .btn-next:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-back { background: white; color: #888; border: 1.5px solid #e0d8d0; border-radius: 10px; padding: 12px 18px; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .btn-back:hover { border-color: #c0392b; color: #c0392b; }
+    .btn-skip { background: none; border: none; color: #bbb; font-size: 0.82rem; cursor: pointer; padding: 12px 8px; text-decoration: underline; }
+    .btn-skip:hover { color: #888; }
 
-    /* ── OTHER HINT ── */
-    .other-hint {
-      font-size: 0.82rem;
-      color: #888;
-      background: #faf7f4;
-      border: 1.5px dashed #ddd;
-      border-radius: 10px;
-      padding: 10px 14px;
-      line-height: 1.5;
-    }
-
-    /* ── GENERATE BUTTON ── */
-    .generate-wrap { padding: 0 20px 20px; }
-    .generate-btn {
-      width: 100%;
-      background: linear-gradient(135deg, #b03020, #d4521e);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      padding: 14px;
-      font-size: 1rem;
-      font-weight: 800;
-      cursor: pointer;
-      letter-spacing: 0.2px;
-      transition: opacity 0.2s, transform 0.15s;
-    }
-    .generate-btn:hover  { opacity: 0.92; transform: translateY(-1px); }
-    .generate-btn:active { transform: translateY(0); opacity: 1; }
+    /* ── SUMMARY PILLS (answered steps) ── */
+    .summary-wrap { padding: 14px 20px 0; display: flex; flex-wrap: wrap; gap: 6px; }
+    .summary-pill { display: flex; align-items: center; gap: 5px; background: #faf7f4; border: 1px solid #e8e0d8; border-radius: 20px; padding: 4px 10px 4px 8px; font-size: 0.75rem; color: #666; cursor: pointer; transition: all 0.15s; max-width: 100%; }
+    .summary-pill:hover { border-color: #c0392b; color: #c0392b; }
+    .pill-label { font-weight: 700; color: #c0392b; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.4px; flex-shrink: 0; }
+    .pill-value { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .pill-edit { font-size: 0.7rem; opacity: 0.5; flex-shrink: 0; }
 
     /* ── OUTPUT ── */
-    .output-wrap {
-      margin: 0 20px 20px;
-      display: none;
-    }
-    .output-box {
-      background: #fffbf5;
-      border: 1.5px solid #e8821a;
-      border-radius: 12px;
-      overflow: hidden;
-    }
-    .output-header {
-      background: #fef3e8;
-      border-bottom: 1px solid #f0d8b8;
-      padding: 10px 14px;
-      font-size: 0.76rem;
-      font-weight: 700;
-      color: #c05010;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-    }
-    .output-text {
-      padding: 14px;
-      font-size: 0.9rem;
-      line-height: 1.75;
-      color: #222;
-      white-space: pre-wrap;
-    }
-    .output-footer {
-      display: flex;
-      gap: 8px;
-      padding: 10px 14px;
-      border-top: 1px solid #f0d8b8;
-      background: #fef3e8;
-    }
-    .copy-btn {
-      flex: 1;
-      background: #c0392b;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 9px 16px;
-      font-size: 0.85rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .copy-btn:hover   { background: #a93226; }
-    .copy-btn.copied  { background: #27ae60; }
-    .reset-btn {
-      background: white;
-      color: #888;
-      border: 1.5px solid #e0d8d0;
-      border-radius: 8px;
-      padding: 9px 14px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .reset-btn:hover { border-color: #c0392b; color: #c0392b; }
+    .output-card { background: white; border-radius: 20px; box-shadow: 0 4px 24px rgba(0,0,0,0.09); overflow: hidden; margin-bottom: 20px; display: none; }
+    .output-header { background: #fef3e8; border-bottom: 1px solid #f0d8b8; padding: 12px 16px; font-size: 0.75rem; font-weight: 700; color: #c05010; text-transform: uppercase; letter-spacing: 0.6px; display: flex; justify-content: space-between; align-items: center; }
+    .output-body { padding: 16px; }
+
+    /* ── LABELED PROMPT LINES ── */
+    .prompt-line { display: flex; gap: 10px; padding: 9px 0; border-bottom: 1px solid #f5f0ea; align-items: flex-start; }
+    .prompt-line:last-child { border-bottom: none; }
+    .prompt-lbl { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; color: white; padding: 3px 8px; border-radius: 10px; flex-shrink: 0; margin-top: 1px; min-width: 62px; text-align: center; }
+    .lbl-role   { background: #7f77dd; }
+    .lbl-task   { background: #1d9e75; }
+    .lbl-format { background: #378add; }
+    .lbl-tone   { background: #ba7517; }
+    .lbl-avoid  { background: #e24b4a; }
+    .prompt-val { font-size: 0.88rem; line-height: 1.6; color: #222; }
+
+    .output-footer { display: flex; gap: 8px; padding: 12px 16px; border-top: 1px solid #f0d8b8; background: #fef3e8; }
+    .btn-copy { flex: 1; background: #c0392b; color: white; border: none; border-radius: 8px; padding: 10px; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+    .btn-copy:hover { background: #a93226; }
+    .btn-copy.copied { background: #27ae60; }
+    .btn-restart { background: white; color: #888; border: 1.5px solid #e0d8d0; border-radius: 8px; padding: 10px 14px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .btn-restart:hover { border-color: #c0392b; color: #c0392b; }
 
     /* ── TIPS ── */
-    .tips-card {
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-    .tips-title {
-      font-size: 0.9rem;
-      font-weight: 800;
-      color: #333;
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .tip-row {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 11px;
-      font-size: 0.84rem;
-      line-height: 1.55;
-      color: #444;
-    }
+    .tips-card { background: white; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); padding: 18px 20px; margin-bottom: 16px; }
+    .tips-title { font-size: 0.88rem; font-weight: 800; color: #333; margin-bottom: 12px; }
+    .tip-row { display: flex; gap: 10px; margin-bottom: 10px; font-size: 0.82rem; line-height: 1.5; color: #555; }
     .tip-row:last-child { margin-bottom: 0; }
-    .tip-icon { flex-shrink: 0; font-size: 1rem; }
 
-    /* ── EXAMPLES ── */
-    .examples-card {
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-      overflow: hidden;
-      margin-bottom: 20px;
-    }
-    .examples-toggle {
-      width: 100%;
-      background: none;
-      border: none;
-      padding: 16px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-      font-size: 0.9rem;
-      font-weight: 800;
-      color: #333;
-      text-align: left;
-    }
-    .examples-toggle .arrow { font-size: 0.9rem; color: #aaa; transition: transform 0.2s; }
-    .examples-toggle.open .arrow { transform: rotate(180deg); }
-    .examples-body { display: none; border-top: 1px solid #f0ebe4; }
-    .examples-body.open { display: block; }
+    /* ── INLINE EDIT ── */
+    .prompt-line { position: relative; }
+    .prompt-edit-btn { background: none; border: none; cursor: pointer; color: #ccc; font-size: 0.85rem; padding: 2px 6px; border-radius: 6px; transition: all 0.15s; flex-shrink: 0; margin-left: auto; }
+    .prompt-edit-btn:hover { color: #c0392b; background: #fff5f5; }
+    .prompt-line.editing .prompt-val { display: none; }
+    .prompt-line.editing .prompt-edit-btn { display: none; }
+    .inline-edit-wrap { display: none; flex: 1; gap: 6px; align-items: flex-start; }
+    .prompt-line.editing .inline-edit-wrap { display: flex; }
+    .inline-edit-input { flex: 1; border: 1.5px solid #c0392b; border-radius: 8px; padding: 6px 10px; font-size: 0.88rem; font-family: inherit; color: #222; resize: none; line-height: 1.55; background: white; box-shadow: 0 0 0 3px rgba(192,57,43,0.1); min-height: 38px; overflow: hidden; }
+    .inline-edit-input:focus { outline: none; }
+    .inline-save-btn { background: #c0392b; color: white; border: none; border-radius: 7px; padding: 6px 12px; font-size: 0.8rem; font-weight: 700; cursor: pointer; flex-shrink: 0; transition: background 0.15s; }
+    .inline-save-btn:hover { background: #a93226; }
 
-    .example-item {
-      padding: 16px 20px;
-      border-bottom: 1px solid #f7f3ef;
-    }
-    .example-item:last-child { border-bottom: none; }
-    .ex-cat {
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      color: #c0392b;
-      margin-bottom: 6px;
-    }
-    .ex-prompt {
-      font-size: 0.85rem;
-      line-height: 1.65;
-      color: #333;
-      background: #faf7f4;
-      border-radius: 8px;
-      padding: 10px 12px;
-      border-left: 3px solid #e8821a;
-    }
-    .ex-copy {
-      background: none;
-      border: 1px solid #e0d8d0;
-      border-radius: 6px;
-      padding: 4px 10px;
-      font-size: 0.75rem;
-      color: #888;
-      cursor: pointer;
-      margin-top: 8px;
-      transition: all 0.2s;
-    }
-    .ex-copy:hover { border-color: #c0392b; color: #c0392b; }
-    .ex-copy.copied { background: #27ae60; border-color: #27ae60; color: white; }
-
-    /* ── SHARE CARD ── */
-    .share-card {
-      background: linear-gradient(135deg, #b03020 0%, #d4521e 60%, #e8821a 100%);
-      border-radius: 16px;
-      padding: 24px 20px;
-      text-align: center;
-      color: white;
-      margin-bottom: 20px;
-    }
-    .share-card h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 8px; }
-    .share-card p  { font-size: 0.88rem; opacity: 0.9; line-height: 1.65; }
-
-    /* ── FOOTER ── */
-    .footer {
-      text-align: center;
-      padding: 20px;
-      font-size: 0.78rem;
-      color: #bbb;
-    }
+    .footer { text-align: center; padding: 20px; font-size: 0.78rem; color: #bbb; }
     .footer a { color: #bbb; text-decoration: none; }
     .footer a:hover { color: #c0392b; }
   </style>
@@ -318,344 +109,361 @@
 <body>
 
 <div class="hero">
-  <h1>🤖 AI ko Smartly Use Karo</h1>
-  <p>Category choose karo → 4 cheezein bharo → Prompt copy karo aur use karo!</p>
+  <h1>🤖 AI Prompt Builder</h1>
+  <p>Answer 5 quick questions → get a perfect prompt → paste into any AI chatbot</p>
 </div>
 
 <div class="container">
 
-  <div class="tool-card">
-
-    <!-- CATEGORY CHIPS -->
-    <div class="cat-section">
-      <div class="cat-label">Kya karna hai?</div>
-      <div class="chips" id="chips">
-        <span class="chip active" data-cat="recipe">🍽️ Recipe</span>
-        <span class="chip" data-cat="travel">✈️ Travel</span>
-        <span class="chip" data-cat="letter">✉️ Letter</span>
-        <span class="chip" data-cat="learn">📚 Seekhna</span>
-        <span class="chip" data-cat="health">💪 Health</span>
-        <span class="chip other" data-cat="other">✏️ Kuch Aur</span>
+  <!-- STEP CARD -->
+  <div class="step-card" id="step-card">
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span id="step-label">Step 1 of 5</span>
+        <span id="step-name">Role</span>
       </div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:20%"></div></div>
     </div>
 
-    <!-- FIELDS -->
-    <div class="fields-section" id="fields-section">
+    <!-- Summary pills of answered steps -->
+    <div class="summary-wrap" id="summary-wrap"></div>
 
-      <!-- Field 1: Role -->
-      <div class="field-group">
-        <label>
-          🎭 Tum kaun ho?
-          <span class="role-tag">AI ka role</span>
-        </label>
-        <textarea id="f1" rows="2" autocomplete="off"></textarea>
-      </div>
-
-      <!-- Field 2: Category-specific -->
-      <div class="field-group">
-        <label id="l2">🎯 Kya banana hai?</label>
-        <textarea id="f2" rows="2" autocomplete="off"></textarea>
-      </div>
-
-      <!-- Field 3: How -->
-      <div class="field-group">
-        <label id="l3">📋 Kaisa chahiye?</label>
-        <textarea id="f3" rows="2" autocomplete="off"></textarea>
-      </div>
-
-      <!-- Field 4: Avoid -->
-      <div class="field-group">
-        <label>
-          🚫 Kya avoid karein?
-          <span class="opt-tag">(optional)</span>
-        </label>
-        <textarea id="f4" rows="2" autocomplete="off"></textarea>
-      </div>
-
+    <div class="step-body">
+      <div class="step-question" id="step-question"></div>
+      <div class="step-hint" id="step-hint"></div>
+      <div class="chips" id="step-chips"></div>
+      <textarea class="step-input" id="step-input" rows="2" autocomplete="off"></textarea>
     </div>
 
-    <!-- GENERATE -->
-    <div class="generate-wrap">
-      <button class="generate-btn" id="gen-btn" onclick="generatePrompt()">
-        ⚡ Mera Prompt Banao
-      </button>
-    </div>
+    <div class="step-nav" id="step-nav"></div>
+  </div>
 
-    <!-- OUTPUT (hidden until generated) -->
-    <div class="output-wrap" id="output-wrap">
-      <div class="output-box">
-        <div class="output-header">✅ Tera Prompt Ready Hai — Copy Karo!</div>
-        <div class="output-text" id="output-text"></div>
-        <div class="output-footer">
-          <button class="copy-btn" id="copy-btn" onclick="copyPrompt(this)">📋 Copy Karo</button>
-          <button class="reset-btn" onclick="resetOutput()">↩ Wapas Jaao</button>
-        </div>
-      </div>
+  <!-- OUTPUT CARD -->
+  <div class="output-card" id="output-card">
+    <div class="output-header">
+      <span>✅ Your prompt is ready — copy and paste!</span>
+      <span id="lang-flag"></span>
     </div>
-
+    <div class="output-body" id="output-body"></div>
+    <div class="output-footer">
+      <button class="btn-copy" id="btn-copy" onclick="copyPrompt()">📋 Copy Prompt</button>
+      <button class="btn-restart" onclick="restart()">↩ Start Over</button>
+    </div>
   </div>
 
   <!-- TIPS -->
   <div class="tips-card">
-    <div class="tips-title">💡 Kaam Ki Baatein</div>
-    <div class="tip-row">
-      <span class="tip-icon">🗣️</span>
-      <span><strong>Hindi ya English — dono chalenge.</strong> Jis bhaasha mein likho, AI usi mein jawab dega.</span>
-    </div>
-    <div class="tip-row">
-      <span class="tip-icon">🔄</span>
-      <span><strong>Pasand nahi aaya?</strong> "Wapas Jaao" dabao, kuch badlo, aur dobara generate karo.</span>
-    </div>
-    <div class="tip-row">
-      <span class="tip-icon">📏</span>
-      <span><strong>"Kaisa chahiye" mein length bhi likh sakte ho</strong> — jaise "sirf 5 bullet points mein" ya "200 words mein."</span>
-    </div>
-    <div class="tip-row">
-      <span class="tip-icon">🧑‍⚕️</span>
-      <span><strong>Medical, legal aur financial advice</strong> ke liye AI ki help lo, par final decision expert se karo.</span>
-    </div>
-  </div>
-
-  <!-- EXAMPLES -->
-  <div class="examples-card">
-    <button class="examples-toggle" id="ex-toggle" onclick="toggleExamples()">
-      <span>📖 Ready-Made Examples Dekho</span>
-      <span class="arrow">▼</span>
-    </button>
-    <div class="examples-body" id="examples-body">
-
-      <div class="example-item">
-        <div class="ex-cat">🍽️ Recipe</div>
-        <div class="ex-prompt" id="ep1">Tum ek experienced Rajasthani chef ho jo vegetarian khana jaanta ho. Mujhe dal baati churma ki recipe chahiye 4 logon ke liye, lunch ke liye. Step-by-step Hindi mein batao, ingredients ki list ke saath. Pyaaz aur lahsun mat daalna.</div>
-        <button class="ex-copy" onclick="copyExample(this, 'ep1')">📋 Copy</button>
-      </div>
-
-      <div class="example-item">
-        <div class="ex-cat">✈️ Travel</div>
-        <div class="ex-prompt" id="ep2">Tum ek experienced travel guide ho jo India ke tours jaanta ho. Mujhe Goa ke liye 5 din ka trip plan chahiye — 2 adults aur 1 child (8 saal), December mein. Day-by-day format mein, medium budget mein. Sirf vegetarian restaurants suggest karo, bahut expensive jagah avoid karo.</div>
-        <button class="ex-copy" onclick="copyExample(this, 'ep2')">📋 Copy</button>
-      </div>
-
-      <div class="example-item">
-        <div class="ex-cat">✉️ Letter</div>
-        <div class="ex-prompt" id="ep3">Tum ek professional writer ho jo formal letters likhna jaanta ho. Mujhe Principal ke naam ek leave application likhni hai — 3 din ki medical leave ke liye. Formal English mein likho, lekin language simple rakho. Bahut complicated words mat use karo.</div>
-        <button class="ex-copy" onclick="copyExample(this, 'ep3')">📋 Copy</button>
-      </div>
-
-      <div class="example-item">
-        <div class="ex-cat">📚 Seekhna</div>
-        <div class="ex-prompt" id="ep4">Tum ek simple teacher ho jo mushkil cheezein aasaan bana sake. Mujhe samajhna hai ki AI kya hota hai aur kaise kaam karta hai — main bilkul beginner hoon, tech zyada nahi jaanta. Bilkul simple Hindi mein samjhao, daily life ke examples ke saath. English tech words avoid karo.</div>
-        <button class="ex-copy" onclick="copyExample(this, 'ep4')">📋 Copy</button>
-      </div>
-
-      <div class="example-item">
-        <div class="ex-cat">💪 Health</div>
-        <div class="ex-prompt" id="ep5">Tum ek certified fitness trainer ho jo ghar pe exercise jaanta ho. Mujhe ek weekly exercise routine chahiye — main 40 saal ki hoon, office mein 8 ghante baithti hoon, thoda weight lose karna chahti hoon. Har din 20-30 minute ka plan do, Hindi mein. Koi equipment nahi chahiye, crash diet suggest mat karo.</div>
-        <button class="ex-copy" onclick="copyExample(this, 'ep5')">📋 Copy</button>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- SHARE CARD -->
-  <div class="share-card">
-    <h3>🤝 Kisi ko AI seekhna hai?</h3>
-    <p>Yeh guide apne doston aur family ke saath share karo —<br>sab ke kaam aayegi, guarantee hai! 😄</p>
+    <div class="tips-title">💡 Quick tips</div>
+    <div class="tip-row"><span>🌐</span><span><strong>Hindi or English — both work.</strong> Type in whichever language feels natural.</span></div>
+    <div class="tip-row"><span>✏️</span><span><strong>Tap any answered step</strong> to go back and change it.</span></div>
+    <div class="tip-row"><span>⏭️</span><span><strong>Step 5 (Avoid) is optional.</strong> Skip it if you have no restrictions.</span></div>
+    <div class="tip-row"><span>📱</span><span><strong>Works on ChatGPT, Claude, Gemini</strong> — paste the prompt and go.</span></div>
   </div>
 
   <div class="footer">
-    Works on ChatGPT · Claude · Gemini — sab par! 🚀<br>
     Made with ❤️ · <a href="https://www.atjosh.com" target="_blank">atjosh.com</a>
   </div>
-
 </div>
 
 <script>
-  const catData = {
-    recipe: {
-      l2: '🎯 Kya banana hai? Kitne logon ke liye?',
-      l3: '📋 Kaisa chahiye?',
-      p1: 'experienced Rajasthani chef jo vegetarian khana jaanta ho',
-      p2: 'Dal baati churma banana sikhao, 4 logon ke liye, lunch ke liye',
-      p3: 'Step-by-step Hindi mein batao, ingredients ki list ke saath',
-      p4: 'Pyaaz lahsun mat daalna, zyada ghee avoid karo'
-    },
-    travel: {
-      l2: '🎯 Kahan jaana hai? Kitne din? Kitne log?',
-      l3: '📋 Kaisa chahiye? (format / budget)',
-      p1: 'experienced travel guide jo India ke tours jaanta ho',
-      p2: 'Goa ka 5 din ka plan batao, 2 adults aur 1 child ke liye, December mein',
-      p3: 'Day-by-day format mein likho, medium budget mein, Hindi mein',
-      p4: 'Bahut expensive jagah avoid karo, sirf vegetarian restaurants suggest karo'
-    },
-    letter: {
-      l2: '🎯 Kisko likhna hai? Kya kaam ke liye?',
-      l3: '📋 Kaisa chahiye? (tone / language)',
-      p1: 'professional writer jo formal letters likhna jaanta ho',
-      p2: 'Principal ke naam medical leave application likho, 3 din ke liye',
-      p3: 'Formal English mein likho, simple words use karo, short rakho',
-      p4: 'Complicated English mat use karna, excuses mat likho'
-    },
-    learn: {
-      l2: '🎯 Kya seekhna hai? Tumhara level kya hai?',
-      l3: '📋 Kaisa chahiye? (depth / language)',
-      p1: 'simple teacher jo mushkil cheez aasaan bana sake',
-      p2: 'AI kya hota hai samjhao, main bilkul beginner hoon, tech nahi jaanta',
-      p3: 'Bilkul simple Hindi mein samjhao, daily life ke examples ke saath',
-      p4: 'English tech words avoid karo, complicated theory mat batao'
-    },
-    health: {
-      l2: '🎯 Kya goal hai? Kya situation hai?',
-      l3: '📋 Kaisa chahiye? (format / duration)',
-      p1: 'certified fitness trainer jo ghar pe exercise jaanta ho',
-      p2: 'Weight lose karna hai, 40 saal ki hoon, office mein 8 ghante baithti hoon',
-      p3: 'Weekly routine do, har din 20-30 min ka plan, Hindi mein',
-      p4: 'Koi gym equipment nahi chahiye, crash diet suggest mat karo'
-    },
-    other: {
-      l2: '🎯 Kya karna hai?',
-      l3: '📋 Kaisa chahiye?',
-      p1: 'experienced [apna expert type — lawyer, chef, teacher, designer...]',
-      p2: '[apna kaam seedha likho — jaise "budget plan banao" ya "poem likho"]',
-      p3: '[format batao — jaise "Hindi mein", "bullet points mein", "short mein"]',
-      p4: '[koi restriction ho toh likho, warna khaali chhod do]'
-    }
+  const STEPS = [
+    { id: 'role',   label: 'Role',        optional: false,
+      question: '👤 Who should help you?',
+      hint: 'Choose the type of expert you want the AI to be.',
+      chips: ['Doctor / Dietician','Lawyer','Financial Advisor','Teacher / Tutor','Chef','Fitness Trainer','Travel Guide','Career Coach','Business Consultant','Other…'],
+      placeholder: 'e.g. experienced tax consultant who knows Indian law' },
+    { id: 'task',   label: 'Task',        optional: false,
+      question: '🎯 What do you need help with?',
+      hint: 'Be specific — include your personal details, context, numbers, situation.',
+      chips: [],
+      placeholder: 'e.g. I am 53 years old, diabetic with high uric acid. What should I eat?' },
+    { id: 'format', label: 'Format',      optional: false,
+      question: '📋 How should the answer look?',
+      hint: 'Choose how you want the information structured.',
+      chips: ['Bullet points','Step by step','Two sections','Table','Short paragraph','Detailed explanation','Other…'],
+      placeholder: 'e.g. two sections — one for what to do, one for what to avoid' },
+    { id: 'tone',   label: 'Tone',        optional: false,
+      question: '🗣️ How should it talk to you?',
+      hint: 'Pick the level of language that suits you best.',
+      chips: ["Simple, plain language","Like I'm a beginner","Like I'm 10 years old","Professional / Expert level","Friendly and casual","Formal","Other…"],
+      placeholder: 'e.g. simple language, no jargon, easy to understand' },
+    { id: 'avoid',  label: 'Avoid',       optional: true,
+      question: '🚫 Anything to avoid or exclude?',
+      hint: "Restrictions, things you don't want, dietary limits, etc.",
+      chips: [],
+      placeholder: 'e.g. no non-vegetarian options, no medical jargon' },
+  ];
+
+  const LABELS = {
+    en: { role:'ROLE', task:'TASK', format:'FORMAT', tone:'TONE', avoid:'AVOID' },
+    hi: { role:'ROLE', task:'KAAM', format:'FORMAT', tone:'TARIKA', avoid:'AVOID' },
   };
+  const COLOR  = { role:'lbl-role', task:'lbl-task', format:'lbl-format', tone:'lbl-tone', avoid:'lbl-avoid' };
 
-  let currentCat = 'recipe';
+  const answers = {};   // final saved answers per step id
+  let currentStep = 0;
+  let selectedChip = null;  // chip value for current step, null if none / Other…
 
-  function setCategory(cat) {
-    currentCat = cat;
-    const d = catData[cat];
-    document.getElementById('l2').textContent = d.l2;
-    document.getElementById('l3').textContent = d.l3;
-    document.getElementById('f1').placeholder = d.p1;
-    document.getElementById('f2').placeholder = d.p2;
-    document.getElementById('f3').placeholder = d.p3;
-    document.getElementById('f4').placeholder = d.p4;
-    ['f1','f2','f3','f4'].forEach(id => {
-      document.getElementById(id).value = '';
-      autoResize(document.getElementById(id));
+  // ── LANGUAGE DETECTION ───────────────────────────────────────────────────
+  function detectLang() {
+    const txt = Object.values(answers).filter(Boolean).join(' ');
+    const deva = (txt.match(/[\u0900-\u097F]/g)||[]).length;
+    const hi   = (txt.match(/\b(karo|batao|chahiye|mujhe|hai|hoon|aur|ke|liye|mein|nahi|mat|kya)\b/gi)||[]).length;
+    const en   = (txt.match(/\b(the|is|are|i|you|my|please|need|want|help|give|for|with|about)\b/gi)||[]).length;
+    return (deva > 0 || hi > en) ? 'hi' : 'en';
+  }
+
+  // ── RENDER STEP ───────────────────────────────────────────────────────────
+  function renderStep() {
+    const s   = STEPS[currentStep];
+    const pct = ((currentStep + 1) / STEPS.length) * 100;
+
+    document.getElementById('step-label').textContent   = 'Step ' + (currentStep+1) + ' of ' + STEPS.length;
+    document.getElementById('step-name').textContent    = s.label;
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('step-question').textContent = s.question;
+    document.getElementById('step-hint').textContent     = s.hint;
+
+    // Reset chip selection for this step
+    selectedChip = null;
+
+    // Chips
+    const chipsEl = document.getElementById('step-chips');
+    chipsEl.innerHTML = '';
+    s.chips.forEach(function(c) {
+      const el = document.createElement('span');
+      el.className = 'chip';
+      // Mark active if this chip matches a previously saved answer
+      if (answers[s.id] === c) { el.classList.add('active'); selectedChip = c; }
+      el.textContent = c;
+      el.onclick = function() { onChipClick(s.id, c, el); };
+      chipsEl.appendChild(el);
     });
-    resetOutput();
+
+    // Input field
+    const inp = document.getElementById('step-input');
+    inp.placeholder = s.placeholder;
+    // If saved answer is NOT a chip value, show it in the text box
+    const savedIsChip = s.chips.indexOf(answers[s.id]) !== -1;
+    inp.value = (answers[s.id] && !savedIsChip) ? answers[s.id] : '';
+    inp.style.borderColor = '';
+    autoResize(inp);
+
+    // Nav buttons
+    const nav = document.getElementById('step-nav');
+    nav.innerHTML = '';
+    if (currentStep > 0) {
+      const back = document.createElement('button');
+      back.className = 'btn-back';
+      back.textContent = '← Back';
+      back.onclick = function() { currentStep--; renderStep(); };
+      nav.appendChild(back);
+    }
+    const next = document.createElement('button');
+    next.className = 'btn-next';
+    next.textContent = (currentStep === STEPS.length - 1) ? '⚡ Build My Prompt' : 'Next →';
+    next.onclick = onNext;
+    nav.appendChild(next);
+    if (s.optional) {
+      const skip = document.createElement('button');
+      skip.className = 'btn-skip';
+      skip.textContent = 'Skip';
+      skip.onclick = function() { answers[s.id] = null; goNext(); };
+      nav.appendChild(skip);
+    }
+
+    // Summary pills
+    renderSummary();
+
+    setTimeout(function() { document.getElementById('step-input').focus(); }, 50);
   }
 
-  function autoResize(el) {
-    el.style.height = 'auto';
-    el.style.height = Math.max(56, el.scrollHeight) + 'px';
+  function onChipClick(stepId, value, el) {
+    document.querySelectorAll('#step-chips .chip').forEach(function(c) { c.classList.remove('active'); });
+    el.classList.add('active');
+    const inp = document.getElementById('step-input');
+    if (value.endsWith('…') || value.endsWith('...')) {
+      // Other — clear chip selection, let user type freely
+      selectedChip = null;
+      inp.value = '';
+      inp.placeholder = 'Type your own answer here…';
+    } else {
+      // Pre-fill text box with chip value so user can refine it
+      selectedChip = value;
+      inp.value = value;
+      autoResize(inp);
+    }
+    inp.focus();
+    // Move cursor to end of text
+    inp.selectionStart = inp.selectionEnd = inp.value.length;
   }
 
-  document.querySelectorAll('textarea').forEach(ta => {
-    ta.addEventListener('input', () => autoResize(ta));
-  });
+  function onNext() {
+    const s     = STEPS[currentStep];
+    const typed = document.getElementById('step-input').value.trim();
 
-  document.getElementById('chips').addEventListener('click', function(e) {
-    const chip = e.target.closest('[data-cat]');
-    if (!chip) return;
-    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-    chip.classList.add('active');
-    setCategory(chip.dataset.cat);
-  });
-
-  function generatePrompt() {
-    const f1 = document.getElementById('f1').value.trim();
-    const f2 = document.getElementById('f2').value.trim();
-    const f3 = document.getElementById('f3').value.trim();
-    const f4 = document.getElementById('f4').value.trim();
-
-    if (!f1 && !f2) {
-      alert('Bhai, pehle kuch toh likho! 😄\nKam se kam pehle do fields bharo.');
-      return;
+    if (typed) {
+      // Typed text wins over everything
+      answers[s.id] = typed;
+      goNext();
+    } else if (selectedChip !== null) {
+      // Real chip was selected, nothing typed
+      answers[s.id] = selectedChip;
+      goNext();
+    } else {
+      // Nothing — show error unless optional
+      if (s.optional) { answers[s.id] = null; goNext(); return; }
+      const inp = document.getElementById('step-input');
+      inp.style.borderColor = '#e24b4a';
+      inp.focus();
+      setTimeout(function() { inp.style.borderColor = ''; }, 1400);
     }
-
-    const skipF4 = ['kuch nahi','nahi','na','nothing','none','no','koi nahi','skip','khaali','blank','—','-'];
-    let parts = [];
-
-    // Field 1 — Role: "Tum ek [role] ho."
-    if (f1) {
-      let role = f1.replace(/^tum\s*(ek\s*)?/i,'').replace(/\s*ho\.?\s*$/i,'').trim();
-      if (!/^ek\s/i.test(role)) role = 'ek ' + role;
-      parts.push('Tum ' + role + ' ho.');
-    }
-
-    // Field 2 — Task: add verb if missing
-    if (f2) {
-      let task = f2.trim();
-      const hasVerb = /karo|do|batao|likho|banao|sikhao|samjhao|chahiye|dijiye|plan|suggest|bolo|dena/i.test(task);
-      if (!hasVerb) task = task + ' batao.';
-      else if (!task.match(/[.!?]$/)) task += '.';
-      parts.push(task.charAt(0).toUpperCase() + task.slice(1));
-    }
-
-    // Field 3 — Format: wrap smartly
-    if (f3) {
-      let fmt = f3.trim();
-      const hasInstruction = /mein|format|step|list|points|short|long|hindi|english|simple|detail|bullet/i.test(fmt);
-      if (!fmt.match(/[.!?]$/)) fmt += '.';
-      parts.push(fmt.charAt(0).toUpperCase() + fmt.slice(1));
-    }
-
-    // Field 4 — Avoid: skip if "kuch nahi" type
-    if (f4) {
-      const isSkip = skipF4.some(w => f4.toLowerCase().trim() === w);
-      if (!isSkip) {
-        let avoid = f4.trim();
-        const hasNeg = /nahi|mat |avoid|band|chhod|skip|without|na /i.test(avoid);
-        if (!hasNeg) avoid = avoid + ' avoid karo.';
-        else if (!avoid.match(/[.!?]$/)) avoid += '.';
-        parts.push(avoid.charAt(0).toUpperCase() + avoid.slice(1));
-      }
-    }
-
-    const prompt = parts.join('\n');
-    document.getElementById('output-text').textContent = prompt;
-
-    const wrap = document.getElementById('output-wrap');
-    wrap.style.display = 'block';
-    wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-    const copyBtn = document.getElementById('copy-btn');
-    copyBtn.textContent = '📋 Copy Karo';
-    copyBtn.classList.remove('copied');
   }
 
-  function copyPrompt(btn) {
-    const text = document.getElementById('output-text').textContent;
-    navigator.clipboard.writeText(text).then(() => {
-      btn.textContent = '✅ Copy Ho Gaya!';
-      btn.classList.add('copied');
-      setTimeout(() => {
-        btn.textContent = '📋 Copy Karo';
-        btn.classList.remove('copied');
-      }, 2500);
+  function goNext() {
+    if (currentStep < STEPS.length - 1) {
+      currentStep++;
+      renderStep();
+    } else {
+      showOutput();
+    }
+  }
+
+  function renderSummary() {
+    const wrap = document.getElementById('summary-wrap');
+    wrap.innerHTML = '';
+    for (let i = 0; i < currentStep; i++) {
+      const s   = STEPS[i];
+      const val = answers[s.id];
+      if (!val) continue;
+      const pill = document.createElement('div');
+      pill.className = 'summary-pill';
+      pill.title = 'Click to edit';
+      pill.innerHTML = '<span class="pill-label">' + s.label + '</span><span class="pill-value">' + val + '</span><span class="pill-edit">✎</span>';
+      pill.onclick = function(idx) { return function() { currentStep = idx; renderStep(); }; }(i);
+      wrap.appendChild(pill);
+    }
+  }
+
+  // ── OUTPUT ────────────────────────────────────────────────────────────────
+  function showOutput() {
+    document.getElementById('step-card').style.display = 'none';
+    const card = document.getElementById('output-card');
+    card.style.display = 'block';
+    renderOutput();
+    card.scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+
+  function renderOutput() {
+    const lang = detectLang();
+    const lbls = LABELS[lang];
+    document.getElementById('lang-flag').textContent = lang === 'hi' ? '🇮🇳 Hindi' : '🇬🇧 English';
+
+    const body = document.getElementById('output-body');
+    body.innerHTML = '';
+
+    STEPS.forEach(function(s) {
+      const val = answers[s.id];
+      if (!val) return;
+
+      const row = document.createElement('div');
+      row.className = 'prompt-line';
+      row.dataset.stepId = s.id;
+      row.innerHTML =
+        '<span class="prompt-lbl ' + COLOR[s.id] + '">' + lbls[s.id] + '</span>' +
+        '<span class="prompt-val" id="pval-' + s.id + '">' + val + '</span>' +
+        '<button class="prompt-edit-btn" data-sid="' + s.id + '">&#9998;</button>' +
+        '<div class="inline-edit-wrap" id="iedit-' + s.id + '">' +
+          '<textarea class="inline-edit-input" id="iinp-' + s.id + '" rows="1">' + val + '</textarea>' +
+          '<button class="inline-save-btn" data-sid="' + s.id + '">Save</button>' +
+        '</div>';
+      body.appendChild(row);
+
+      row.querySelector('.prompt-edit-btn').onclick = function() { startEdit(this.dataset.sid); };
+      row.querySelector('.inline-save-btn').onclick = function() { saveEdit(this.dataset.sid); };
+
+      const ta = document.getElementById('iinp-' + s.id);
+      ta.addEventListener('input', function() { autoResizeEl(ta); });
+      ta.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); saveEdit(s.id); }
+        if (e.key === 'Escape') { cancelEdit(s.id); }
+      });
     });
   }
 
-  function resetOutput() {
-    const wrap = document.getElementById('output-wrap');
-    wrap.style.display = 'none';
+  function startEdit(stepId) {
+    document.querySelectorAll('.prompt-line').forEach(function(r) {
+      r.classList.remove('editing');
+    });
+    const row = document.querySelector('.prompt-line[data-step-id="' + stepId + '"]');
+    row.classList.add('editing');
+    const ta = document.getElementById('iinp-' + stepId);
+    autoResizeEl(ta);
+    ta.focus();
+    ta.select();
   }
 
-  function toggleExamples() {
-    const body = document.getElementById('examples-body');
-    const btn  = document.getElementById('ex-toggle');
-    body.classList.toggle('open');
-    btn.classList.toggle('open');
+  function saveEdit(stepId) {
+    const ta  = document.getElementById('iinp-' + stepId);
+    const val = ta.value.trim();
+    if (!val) { ta.style.borderColor = '#e24b4a'; setTimeout(function() { ta.style.borderColor = ''; }, 1000); return; }
+    answers[stepId] = val;
+    renderOutput();
   }
 
-  function copyExample(btn, id) {
-    const text = document.getElementById(id).textContent;
-    navigator.clipboard.writeText(text).then(() => {
+  function cancelEdit(stepId) {
+    const row = document.querySelector('.prompt-line[data-step-id="' + stepId + '"]');
+    if (row) row.classList.remove('editing');
+  }
+
+  // ── COPY ──────────────────────────────────────────────────────────────────
+  function copyPrompt() {
+    const lang  = detectLang();
+    const lbls  = LABELS[lang];
+    const lines = STEPS.filter(function(s) { return answers[s.id]; })
+                       .map(function(s)    { return lbls[s.id] + ': ' + answers[s.id]; });
+    navigator.clipboard.writeText(lines.join('\n')).then(function() {
+      const btn = document.getElementById('btn-copy');
       btn.textContent = '✅ Copied!';
       btn.classList.add('copied');
-      setTimeout(() => {
-        btn.textContent = '📋 Copy';
-        btn.classList.remove('copied');
-      }, 2000);
+      setTimeout(function() { btn.textContent = '📋 Copy Prompt'; btn.classList.remove('copied'); }, 2500);
     });
   }
 
-  setCategory('recipe');
+  // ── RESTART ───────────────────────────────────────────────────────────────
+  function restart() {
+    Object.keys(answers).forEach(function(k) { delete answers[k]; });
+    currentStep  = 0;
+    selectedChip = null;
+    document.getElementById('output-card').style.display = 'none';
+    document.getElementById('step-card').style.display   = 'block';
+    renderStep();
+  }
+
+  // ── UTILS ─────────────────────────────────────────────────────────────────
+  function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.max(60, el.scrollHeight) + 'px';
+  }
+  function autoResizeEl(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.max(38, el.scrollHeight) + 'px';
+  }
+
+  document.addEventListener('input', function(e) {
+    if (e.target.id === 'step-input') autoResize(e.target);
+  });
+
+  // Enter key on main step input advances — but NOT on inline edit inputs
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey && e.target.id === 'step-input') {
+      e.preventDefault();
+      onNext();
+    }
+  });
+
+  // ── INIT ──────────────────────────────────────────────────────────────────
+  renderStep();
 </script>
 </body>
 </html>
