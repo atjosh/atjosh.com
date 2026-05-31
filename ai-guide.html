@@ -101,6 +101,16 @@
     .inline-save-btn { background: #c0392b; color: white; border: none; border-radius: 7px; padding: 6px 12px; font-size: 0.8rem; font-weight: 700; cursor: pointer; flex-shrink: 0; transition: background 0.15s; }
     .inline-save-btn:hover { background: #a93226; }
 
+    /* ── OPEN IN APP ── */
+    .open-in { padding: 14px 16px; border-top: 1px solid #f0d8b8; background: #fef9f4; }
+    .open-in-label { font-size: 0.75rem; font-weight: 700; color: #c05010; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px; }
+    .app-btns { display: flex; gap: 8px; }
+    .app-btn { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 6px; border-radius: 10px; border: 1.5px solid #e0d8d0; background: white; cursor: pointer; text-decoration: none; transition: all 0.18s; }
+    .app-btn:hover { border-color: #c0392b; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .app-btn .app-icon { font-size: 1.3rem; }
+    .app-btn .app-name { font-size: 0.72rem; font-weight: 700; color: #444; }
+    .app-btn .app-hint { font-size: 0.65rem; color: #aaa; }
+
     .footer { text-align: center; padding: 20px; font-size: 0.78rem; color: #bbb; }
     .footer a { color: #bbb; text-decoration: none; }
     .footer a:hover { color: #c0392b; }
@@ -149,6 +159,27 @@
       <button class="btn-copy" id="btn-copy" onclick="copyPrompt()">📋 Copy Prompt</button>
       <button class="btn-restart" onclick="restart()">↩ Start Over</button>
     </div>
+    <div class="open-in">
+      <div class="open-in-label">🚀 Click to open your favourite AI tool below — prompt is auto-copied, just paste it!</div>
+      <div class="app-btns">
+        <a class="app-btn" href="https://chat.openai.com" target="_blank" onclick="copyAndOpen()">
+          <span class="app-icon">💬</span>
+          <span class="app-name">ChatGPT</span>
+        </a>
+        <a class="app-btn" href="https://claude.ai" target="_blank" onclick="copyAndOpen()">
+          <span class="app-icon">✦</span>
+          <span class="app-name">Claude</span>
+        </a>
+        <a class="app-btn" href="https://gemini.google.com" target="_blank" onclick="copyAndOpen()">
+          <span class="app-icon">🔷</span>
+          <span class="app-name">Gemini</span>
+        </a>
+        <a class="app-btn" href="https://www.perplexity.ai" target="_blank" onclick="copyAndOpen()">
+          <span class="app-icon">🔍</span>
+          <span class="app-name">Perplexity</span>
+        </a>
+      </div>
+    </div>
   </div>
 
   <!-- TIPS -->
@@ -171,27 +202,27 @@
       question: '👤 Who should help you?',
       hint: 'Choose the type of expert you want the AI to be.',
       chips: ['Doctor / Dietician','Lawyer','Financial Advisor','Teacher / Tutor','Chef','Fitness Trainer','Travel Guide','Career Coach','Business Consultant','Other…'],
-      placeholder: 'e.g. experienced tax consultant who knows Indian law' },
+      placeholder: 'Describe the expert — e.g. tax consultant, Ayurvedic doctor, fitness coach' },
     { id: 'task',   label: 'Task',        optional: false,
       question: '🎯 What do you need help with?',
       hint: 'Be specific — include your personal details, context, numbers, situation.',
       chips: [],
-      placeholder: 'e.g. I am 53 years old, diabetic with high uric acid. What should I eat?' },
+      placeholder: 'Describe your situation — who you are, what you need, any relevant details' },
     { id: 'format', label: 'Format',      optional: false,
       question: '📋 How should the answer look?',
       hint: 'Choose how you want the information structured.',
       chips: ['Bullet points','Step by step','Two sections','Table','Short paragraph','Detailed explanation','Other…'],
-      placeholder: 'e.g. two sections — one for what to do, one for what to avoid' },
+      placeholder: 'Describe the layout — e.g. two sections, numbered steps, short paragraph' },
     { id: 'tone',   label: 'Tone',        optional: false,
       question: '🗣️ How should it talk to you?',
       hint: 'Pick the level of language that suits you best.',
       chips: ["Simple, plain language","Like I'm a beginner","Like I'm 10 years old","Professional / Expert level","Friendly and casual","Formal","Other…"],
-      placeholder: 'e.g. simple language, no jargon, easy to understand' },
+      placeholder: 'How you want it explained — e.g. simple, beginner-friendly, formal' },
     { id: 'avoid',  label: 'Avoid',       optional: true,
       question: '🚫 Anything to avoid or exclude?',
       hint: "Restrictions, things you don't want, dietary limits, etc.",
       chips: [],
-      placeholder: 'e.g. no non-vegetarian options, no medical jargon' },
+      placeholder: 'What to leave out — e.g. no jargon, no expensive options, no non-veg' },
   ];
 
   const LABELS = {
@@ -417,6 +448,20 @@
   }
 
   // ── COPY ──────────────────────────────────────────────────────────────────
+  function copyAndOpen() {
+    // Auto-copy prompt to clipboard when user clicks a chatbot link
+    const lang  = detectLang();
+    const lbls  = LABELS[lang];
+    const lines = STEPS.filter(function(s) { return answers[s.id]; })
+                       .map(function(s)    { return lbls[s.id] + ': ' + answers[s.id]; });
+    navigator.clipboard.writeText(lines.join('\n')).then(function() {
+      const btn = document.getElementById('btn-copy');
+      btn.textContent = '✅ Copied!';
+      btn.classList.add('copied');
+      setTimeout(function() { btn.textContent = '📋 Copy Prompt'; btn.classList.remove('copied'); }, 2500);
+    });
+  }
+
   function copyPrompt() {
     const lang  = detectLang();
     const lbls  = LABELS[lang];
